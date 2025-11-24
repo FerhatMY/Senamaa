@@ -21,53 +21,56 @@
             align-items: center;
             background: linear-gradient(135deg, #ffecd2, #fcb69f, #ff9a9e);
             padding: 20px;
-            overflow: hidden; /* Scroll çıkmasın diye */
+            /* YATAY scroll'u engelle, DİKEY serbest olsun */
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .container {
             text-align: center;
             background: rgba(255, 255, 255, 0.93);
-            padding: 60px 40px;
+            padding: 40px 30px; /* Mobilde çok yer kaplamasın diye biraz kıstım */
             border-radius: 30px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             max-width: 600px;
             width: 100%;
             z-index: 1;
             position: relative;
+            margin: 20px 0; /* Mobilde üst ve alttan yapışmasın */
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 2.5rem; /* Mobilde devasa olmasın */
             color: #d63447;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #444;
-            line-height: 1.8;
-            margin-bottom: 40px;
+            line-height: 1.6;
+            margin-bottom: 30px;
         }
 
         .buttons {
             display: flex;
-            gap: 30px;
+            gap: 20px;
             justify-content: center;
             position: relative;
             flex-wrap: wrap;
-            min-height: 70px; /* Buton alanı çökmesin diye */
+            min-height: 60px;
         }
 
         button {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            padding: 18px 50px;
+            padding: 15px 40px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             transition: 0.2s;
-            z-index: 10; /* Butonlar önde olsun */
+            z-index: 10;
         }
 
         #yesBtn {
@@ -78,22 +81,25 @@
         #noBtn {
             background: linear-gradient(135deg, #a8edea, #fed6e3);
             color: #444;
-            position: relative; /* Başlangıçta normal dursun */
-            transition: all 0.3s ease; /* Yumuşak geçiş */
+            position: relative;
+            transition: all 0.3s ease;
         }
 
-        /* Kutlama ekranı */
+        /* --- KUTLAMA EKRANI AYARLARI (Scroll eklendi) --- */
         .celebration {
             display: none;
             position: fixed;
-            inset: 0;
+            inset: 0; /* Tüm ekranı kapla */
             background: rgba(255, 240, 245, 0.98);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
+            z-index: 9999; /* En üstte */
+            /* İçerik ortalansın ama sığmazsa kaydırılabilsin */
             flex-direction: column;
-            padding: 20px;
-            overflow: hidden;
+            align-items: center;
+            justify-content: flex-start; /* Mobilde içerik yukarıdan başlasın */
+
+            padding: 40px 20px;
+            overflow-y: auto; /* DİKEY SCROLL AÇIK */
+            -webkit-overflow-scrolling: touch; /* iPhone'da akıcı kaydırma */
         }
 
             .celebration.active {
@@ -101,8 +107,10 @@
             }
 
             .celebration img {
-                width: 300px;
-                height: 300px;
+                width: 250px;
+                max-width: 80%; /* Mobilde ekranı patlatmasın */
+                height: auto;
+                max-height: 30vh; /* Ekranın %30'unu geçmesin */
                 object-fit: cover;
                 object-position: center;
                 margin-bottom: 20px;
@@ -112,24 +120,26 @@
             }
 
             .celebration h2 {
-                font-size: 2.4rem;
+                font-size: 2rem;
                 color: #d63447;
-                margin-bottom: 20px;
+                margin-bottom: 15px;
                 text-align: center;
             }
 
             .celebration p {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 max-width: 600px;
-                margin-top: 20px;
-                line-height: 1.7;
+                margin-top: 10px;
+                margin-bottom: 30px; /* Alttaki yazıya yer aç */
+                line-height: 1.5;
                 color: #444;
                 text-align: center;
             }
 
             .celebration .love {
-                margin-top: 25px;
-                font-size: 1.5rem;
+                margin-top: auto; /* En alta itmeye çalışır ama scroll varsa sorun olmaz */
+                margin-bottom: 40px; /* En altta biraz boşluk kalsın */
+                font-size: 1.3rem;
                 color: #d63447;
                 font-weight: 700;
                 animation: pulse 1.5s infinite;
@@ -146,7 +156,6 @@
             }
         }
 
-        /* Kalp Efektleri */
         .heart {
             position: absolute;
             font-size: 2rem;
@@ -173,7 +182,7 @@
 
     <div class="container">
         <h1>Beni affeder misin?</h1>
-        <p>Seni üzdüğüm için özür dilerim... telafi etmeme izin verir misin ?  :) </p>
+        <p>Seni üzdüğüm için özür dilerim... telafi etmeme izin verir misin ? :) </p>
         <div class="buttons">
             <button id="yesBtn">Evet</button>
             <button id="noBtn">Hayır</button>
@@ -202,10 +211,9 @@
         // Evet butonu
         yesBtn.addEventListener("click", () => {
             celebration.classList.add("active");
-            // Müzik varsa oynatır, yoksa hata vermez
             if (music) {
                 music.currentTime = 37;
-                music.play().catch(e => console.log("Otomatik oynatma tarayıcı tarafından engellendi."));
+                music.play().catch(e => console.log("Otomatik oynatma engellendi, kullanıcı etkileşimi gerekebilir."));
             }
             createHearts(50);
             startConfetti();
@@ -213,47 +221,37 @@
 
         // Hayır butonu kaçırma fonksiyonu
         function moveNoButton() {
-            // Butonun boyutlarını al
             const rect = noBtn.getBoundingClientRect();
             const width = rect.width;
             const height = rect.height;
 
-            // Ekranın sınırlarını al (padding payı bırakalım ki en kenara yapışmasın)
             const maxX = window.innerWidth - width - 20;
             const maxY = window.innerHeight - height - 20;
 
-            // Rastgele koordinat
             const x = Math.max(10, Math.random() * maxX);
             const y = Math.max(10, Math.random() * maxY);
 
-            // KRİTİK KISIM: Position fixed yapıyoruz ki ekranın herhangi bir yerine gidebilsin
             noBtn.style.position = 'fixed';
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
-            noBtn.style.zIndex = '1000'; // Her şeyin üstüne çıksın
+            noBtn.style.zIndex = '1000';
         }
 
-        // Mouse üzerine gelince kaç
         noBtn.addEventListener("mouseenter", moveNoButton);
-
-        // Telefondan girenler için dokununca kaç
         noBtn.addEventListener("touchstart", (e) => {
-            e.preventDefault(); // Tıklamayı engelle
+            e.preventDefault();
             moveNoButton();
         });
-
-        // İnat edip tıklamaya çalışanlar için tıklayınca da kaçsın
         noBtn.addEventListener("click", (e) => {
             e.preventDefault();
             moveNoButton();
         });
 
-        // Kalp oluşturma
         function createHearts(count) {
             for (let i = 0; i < count; i++) {
                 const heart = document.createElement("div");
                 heart.className = "heart";
-                heart.innerHTML = "❤️"; // Emoji ekledim ki görünsün
+                heart.innerHTML = "❤️";
                 heart.style.left = Math.random() * 100 + "vw";
                 heart.style.fontSize = (10 + Math.random() * 30) + "px";
                 heart.style.animationDuration = (2 + Math.random() * 3) + "s";
@@ -262,7 +260,6 @@
             }
         }
 
-        // Konfeti efekti
         function startConfetti() {
             const confettiScript = document.createElement("script");
             confettiScript.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.min.js";
